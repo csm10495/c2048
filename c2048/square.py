@@ -1,4 +1,4 @@
-"""
+﻿"""
 This file is part of c2048 - a Python object-oriented implementation of 2048
 (C) - Charles Machalow - MIT License
 """
@@ -86,7 +86,6 @@ class Square():
         while value != 0:
             self.__width += 1
             value //= 10
-
 
     def getWidth(self):
         """

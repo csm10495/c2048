@@ -1,4 +1,4 @@
-"""
+﻿"""
 This file is part of c2048 - a Python object-oriented implementation of 2048
 (C) - Charles Machalow - MIT License
 """
@@ -51,9 +51,11 @@ def main():
 if __name__ == "__main__":
     main()
     a = Board()
-    a.setRandomEmptySquareValue(999999)
 
+    count = 2
     while True:
         input()
-        a.setRandomEmptySquareValue(999999)
+        clearScreen()
+        print(a.setRandomEmptySquareValue(count))
         print(a)
+        count *= 32

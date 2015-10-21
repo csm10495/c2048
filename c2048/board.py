@@ -1,4 +1,4 @@
-"""
+﻿"""
 This file is part of c2048 - a Python object-oriented implementation of 2048
 (C) - Charles Machalow - MIT License
 """
@@ -21,7 +21,7 @@ class Board():
         self.__height = height
         self.__squares = []
 
-        for i in range(self.__width * self.__height):
+        for i in range(self.getNumSquares()):
             self.__squares.append(Square(value=squareValue))
 
     def __str__(self):
@@ -36,8 +36,8 @@ class Board():
             retLst.append("")
 
         squaresPrinted = 0
-        while squaresPrinted != self.__height * self.__width:
-            for i in range(self.__width):
+        while squaresPrinted != self.getNumSquares():
+            for i in range(self.getWidth()):
                 c = 0
                 for j in str(self.__squares[squaresPrinted]).splitlines():
                     retLst[c] += j
@@ -53,6 +53,27 @@ class Board():
                 retLst.append("")
 
         return output
+
+    def getWidth(self):
+        """
+        Brief:
+            Return the number of squares on the width of the board
+        """
+        return self.__width
+
+    def getHeight(self):
+        """
+        Brief:
+            Return the number of squares on the height of the board
+        """
+        return self.__height
+
+    def getNumSquares(self):
+        """
+        Brief:
+            Returns the number of squares on the board
+        """
+        return self.getHeight() * self.getWidth()
 
     def getSquareWidth(self):
         """
@@ -93,3 +114,32 @@ class Board():
         self.setSquareWidth(w)
 
         return True
+
+    def getRows(self):
+        """
+        Brief:
+            Returns a list of lists. The inner lists correspond to rows of squares on the board
+        """
+        retList = []
+        for i, item in enumerate(self.__squares):
+            if i % self.getWidth() == 0:
+                retList.append([])
+            retList[-1].append(item)
+
+        return retList
+
+    def getColumns(self):
+        """
+        Brief:
+            Returns a list of lists. The inner lists correspond to columns of squares on the board
+        """
+        retList = []
+
+        for i in range(self.getWidth()):
+            retList.append([])
+
+        for i, item in enumerate(self.__squares):
+            retList[i % self.getWidth()].append(item)
+
+        return retList
+
