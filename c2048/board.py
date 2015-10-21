@@ -54,6 +54,13 @@ class Board():
 
         return output
 
+    def __eq__(self, other):
+        """
+        Brief:
+            Compare equality of this object and another
+        """
+        return str(self) == str(other)
+
     def getWidth(self):
         """
         Brief:
