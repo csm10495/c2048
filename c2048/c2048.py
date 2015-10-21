@@ -16,6 +16,29 @@ def clearScreen():
     else:
         t = os.system('clear')
 
+def getch():
+    """
+    Brief:
+        Get one character from stdin and return it.
+        Returned as a byte string (eg: b'a')
+    """
+    try:
+        #Windows
+        import msvcrt
+        char = msvcrt.getch()
+    except:
+        #Linux
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        save = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            char = sys.stdin.read(1)
+        finally:
+            #reset terminal
+            termios.tcsetattr(fd, termios.TCSADRAIN, save)
+
+    return char
 
 def main():
     """
@@ -30,22 +53,7 @@ def main():
     print("#      press any key to go      #".center(80))
     print("#################################".center(80))
     
-    try:
-        #Windows
-        import msvcrt
-        msvcrt.getch()
-    except:
-        #Linux
-        import sys, tty, termios
-        fd = sys.stdin.fileno()
-        save = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            sys.stdin.read(1)
-        finally:
-            #reset terminal
-            termios.tcsetattr(fd, termios.TCSADRAIN, save)
-
+    getch()
     clearScreen()
 
 if __name__ == "__main__":
@@ -54,8 +62,9 @@ if __name__ == "__main__":
 
     count = 2
     while True:
-        input()
+        b = getch()
         clearScreen()
+        print(b)
         print(a.setRandomEmptySquareValue(count))
         print(a)
         count *= 32
