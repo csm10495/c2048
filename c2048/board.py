@@ -59,7 +59,16 @@ class Board():
         Brief:
             Compare equality of this object and another
         """
-        return str(self) == str(other)
+        selfList = []
+        otherList = []
+
+        for i in self.__squares:
+            selfList.append(i.getValue())
+
+        for i in other.__squares:
+            otherList.append(i.getValue())
+
+        return selfList == otherList
 
     def getWidth(self):
         """
@@ -109,7 +118,7 @@ class Board():
         """
         emptySquares = []
         for i in self.__squares:
-            if i.getValue() == "":
+            if i.getValue() == 0:
                 emptySquares.append(i)
 
         if len(emptySquares) == 0:
@@ -135,6 +144,37 @@ class Board():
 
         return retList
 
+    def setRow(self, rowNum, values):
+        """
+        Brief:
+            Sets a specific row's (0 indexed) values
+            Returns True on success, False on failure
+        """
+        squareNum = rowNum * self.getWidth()
+
+        if squareNum > self.getNumSquares() - self.getWidth():
+            return False
+
+        for i in values:
+            self.__squares[squareNum] = i
+            squareNum += 1
+
+        return True
+
+    def setColumn(self, colNum, values):
+        """
+        Brief:
+            Sets a specific column's (0 indexed) values
+            Returns True on success, False on failure
+        """
+        squareNum = colNum
+
+        for i in values:
+            self.__squares[squareNum] = i
+            squareNum += self.getWidth()
+
+        return True
+
     def getColumns(self):
         """
         Brief:
@@ -150,3 +190,13 @@ class Board():
 
         return retList
 
+    def getMaxSquareValue(self):
+        """
+        Brief:
+            Returns the maximum square value on the board
+        """
+        maxValue = 0
+        for i in self.__squares:
+            if i.getValue() > maxValue:
+                maxValue = i.getValue()
+        return maxValue

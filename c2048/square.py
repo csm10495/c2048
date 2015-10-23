@@ -35,7 +35,11 @@ class Square():
         Brief:
             Return a string representation of this square
         """
-        numstr = str.center(str(self.getValue()), self.getWidth())
+
+        correctedValue = self.getValue()
+        if correctedValue == 0:
+            correctedValue = ""
+        numstr = str.center(str(correctedValue), self.getWidth())
 
         retstr = " " + ("-" * self.getWidth())
         for i in range(self.getWidth()):
@@ -70,10 +74,7 @@ class Square():
         Brief:
             Return the square's value
         """
-        if self.__value == 0:
-            return ""
-        else:
-            return self.__value
+        return self.__value
 
     def setValue(self, value):
         """
