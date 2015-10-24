@@ -349,4 +349,8 @@ class Board():
     b'd' : ('RIGHT', moveRight),
     b'w' : ('UP', moveUp),
     b's' : ('DOWN', moveDown),
+    b'K' : ('LEFT', moveLeft),
+    b'M' : ('RIGHT', moveRight),
+    b'H' : ('UP', moveUp),
+    b'P' : ('DOWN', moveDown),
     }
