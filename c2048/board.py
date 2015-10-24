@@ -5,6 +5,7 @@ This file is part of c2048 - a Python object-oriented implementation of 2048
 
 from square import Square
 import random
+import copy
 
 class Board():
     """
@@ -57,7 +58,7 @@ class Board():
     def __eq__(self, other):
         """
         Brief:
-            Compare equality of this object and another
+            Compare equality of this Board object and another
         """
         selfList = []
         otherList = []
@@ -68,7 +69,7 @@ class Board():
         for i in other.__squares:
             otherList.append(i.getValue())
 
-        return selfList == otherList
+        return selfList == otherList and self.getHeight() == other.getHeight() and self.getWidth() == other.getWidth()
 
     def getWidth(self):
         """
@@ -109,11 +110,19 @@ class Board():
         for i in self.__squares:
             i.setWidth(width)
 
+    def setSquareBordersToNormal(self):
+        """
+        Brief:
+            Sets all square's borders to normal chars
+        """
+        for i in self.__squares:
+            i.setBorderToNormal()
+
     def setRandomEmptySquareValue(self, value):
         """
         Brief:
            Picks a random square that doesn't have a value and set it.
-           Returns True on success
+           Returns a Square on success
            Returns False if there are no empty squares
         """
         emptySquares = []
@@ -124,12 +133,15 @@ class Board():
         if len(emptySquares) == 0:
             return False
 
-        (random.choice(emptySquares)).setValue(value)
+        self.setSquareBordersToNormal()
 
-        w = self.getSquareWidth()
-        self.setSquareWidth(w)
+        square = (random.choice(emptySquares))
+        square.setValue(value)
+        square.setBorderToStars()
 
-        return True
+        self.setSquareWidth(self.getSquareWidth())
+
+        return square
 
     def getRows(self):
         """
@@ -200,3 +212,141 @@ class Board():
             if i.getValue() > maxValue:
                 maxValue = i.getValue()
         return maxValue
+
+    def removeEmptySquares(self, row):
+        """
+        Brief:
+            Returns a list derived from the given one with all empty squares removed
+        """
+        newRow = []
+        for i in row:
+            if i.getValue() != 0:
+                newRow.append(i)
+        return newRow
+
+    def moveLeft(self):
+        """
+        Brief:
+            Moves all squares on the given board left
+        """
+        rows = self.getRows()
+
+        for count, row in enumerate(rows):
+            newRow = self.removeEmptySquares(row)
+
+            for i in range(len(newRow)-1):
+                if newRow[i] == newRow[i+1]:
+                    newRow[i].setValue(newRow[i].getValue() * 2)
+                    newRow[i+1].setValue(0)
+            newRow = self.removeEmptySquares(row)
+
+            while len(newRow) < len(row):
+                newRow.append(Square(value=0))
+
+            self.setRow(count, newRow)
+
+    def moveRight(self):
+        """
+        Brief:
+            Moves all squares on the given board right
+        """
+        rows = self.getRows()
+
+        for count, row in enumerate(rows):
+            newRow = self.removeEmptySquares(row)
+
+            for i in range(1, len(newRow)):
+                if newRow[i] == newRow[i-1]:
+                    newRow[i].setValue(newRow[i].getValue() * 2)
+                    newRow[i-1].setValue(0)
+            newRow = self.removeEmptySquares(row)
+
+            while len(newRow) < len(row):
+                newRow.insert(0,Square(value=0))
+
+            self.setRow(count, newRow)
+
+    def moveUp(self):
+        """
+        Brief:
+            Moves all squares on the given board up
+        """
+        cols = self.getColumns()
+
+        for count, col in enumerate(cols):
+            newCol = self.removeEmptySquares(col)
+
+            for i in range(len(newCol)-1):
+                if newCol[i] == newCol[i+1]:
+                    newCol[i].setValue(newCol[i].getValue() * 2)
+                    newCol[i+1].setValue(0)
+            newCol = self.removeEmptySquares(col)
+
+            while len(newCol) < len(col):
+                newCol.append(Square(value=0))
+
+            self.setColumn(count, newCol)
+
+    def moveDown(self):
+        """
+        Brief:
+            Moves all squares on the given board down
+        """
+        cols = self.getColumns()
+
+        for count, col in enumerate(cols):
+            newCol = self.removeEmptySquares(col)
+
+            for i in range(1, len(newCol)):
+                if newCol[i] == newCol[i-1]:
+                    newCol[i].setValue(newCol[i].getValue() * 2)
+                    newCol[i-1].setValue(0)
+            newCol = self.removeEmptySquares(col)
+
+            while len(newCol) < len(col):
+                newCol.insert(0, Square(value=0))
+
+            self.setColumn(count, newCol)
+
+    def validMovesExist(self):
+        """
+        Brief:
+            Returns True if there is at least one move that can change the board
+        """
+        testBoard = copy.deepcopy(self)
+        testBoard.moveLeft()
+        if testBoard != self:
+            return True
+
+        testBoard = copy.deepcopy(self)
+        testBoard.moveRight()
+        if testBoard != self:
+            return True
+
+        testBoard = copy.deepcopy(self)
+        testBoard.moveUp()
+        if testBoard != self:
+            return True
+
+        testBoard = copy.deepcopy(self)
+        testBoard.moveDown()
+        if testBoard != self:
+            return True
+
+        return False
+
+    def moveValid(self, moveStr):
+        """
+        Brief:
+            Returns true if the move is valid
+        """
+        testBoard = copy.deepcopy(self)
+        testBoard.DIRECTIONS[moveStr][1](testBoard)
+        return testBoard != self
+
+    DIRECTIONS = {
+    b'a' : ('LEFT', moveLeft),
+    b'd' : ('RIGHT', moveRight),
+    b'w' : ('UP', moveUp),
+    b's' : ('DOWN', moveDown),
+    }

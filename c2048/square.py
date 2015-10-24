@@ -9,12 +9,15 @@ class Square():
             This class represents a piece on the game board for c2048
     """
 
-    def __init__(self, value=None, width=None):
+    def __init__(self, value=None, width=None, horizontalChar="-", verticalChar="|"):
         """
         Brief:
             Constructor for the Square class
         """
         self.__value = value
+
+        self.__horizontalChar = horizontalChar
+        self.__verticalChar = verticalChar
 
         if value is None:
             self.__width = None
@@ -41,18 +44,41 @@ class Square():
             correctedValue = ""
         numstr = str.center(str(correctedValue), self.getWidth())
 
-        retstr = " " + ("-" * self.getWidth())
+        retstr = " " + (self.__horizontalChar * self.getWidth())
         for i in range(self.getWidth()):
-            retstr += "\n|"
+            retstr += "\n" + self.__verticalChar
             for j in range(self.getWidth()):
                 if i == (self.getWidth() // 2):
                     retstr += numstr[j]
                 else:
                     retstr += " "
-            retstr += "|"
+            retstr += self.__verticalChar
 
-        retstr += "\n " + ("-" * self.getWidth())
+        retstr += "\n " + (self.__horizontalChar * self.getWidth())
         return retstr
+
+    def __eq__(self, other):
+        """
+        Brief:
+            Used for checking the equality of two Square objects
+        """
+        return self.getValue() == other.getValue()
+
+    def setBorderToNormal(self):
+        """
+        Brief:
+            Resets both horizontal and vertical border chars to their default values
+        """
+        self.__horizontalChar = "-"
+        self.__verticalChar = "|"
+
+    def setBorderToStars(self):
+        """
+        Brief:
+            Resets both horizontal and vertical border chars to stars
+        """
+        self.__horizontalChar = "*"
+        self.__verticalChar = "*"
 
     def getEmptySquare(self):
         """
